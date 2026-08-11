@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="생활기록부 피드백 시스템 개인정보처리방침">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta property="og:title" content="생활기록부 피드백 시스템 - 개인정보처리방침">
+  <meta property="og:description" content="생활기록부 피드백 시스템 개인정보 수집 및 이용 방침 안내">
+  <title>개인정보처리방침 - 생활기록부 피드백 시스템</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+  <style>
+    .policy-container {
+      max-width: 860px;
+      margin: 40px auto;
+      padding: 36px 32px;
+      background: #FFFFFF;
+      border-radius: 12px;
+      border: 1px solid #E2E8F0;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+      line-height: 1.8;
+      color: #334155;
+    }
+    .policy-header {
+      border-bottom: 2px solid #F1F5F9;
+      padding-bottom: 20px;
+      margin-bottom: 28px;
+    }
+    .policy-header h1 {
+      font-size: 24px;
+      font-weight: 800;
+      color: #1E293B;
+      margin-bottom: 8px;
+    }
+    .policy-date {
+      font-size: 13px;
+      color: #64748B;
+    }
+    .policy-section {
+      margin-bottom: 28px;
+    }
+    .policy-section h2 {
+      font-size: 17px;
+      font-weight: 700;
+      color: #1E293B;
+      margin-bottom: 12px;
+      border-left: 4px solid #4F46E5;
+      padding-left: 10px;
+    }
+    .policy-section p, .policy-section ul {
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+    .policy-section ul {
+      padding-left: 20px;
+    }
+    .policy-section li {
+      margin-bottom: 6px;
+    }
+    .policy-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 12px 0;
+      font-size: 13px;
+    }
+    .policy-table th, .policy-table td {
+      border: 1px solid #CBD5E1;
+      padding: 10px 12px;
+      text-align: left;
+    }
+    .policy-table th {
+      background-color: #F8FAFC;
+      font-weight: 700;
+      color: #1E293B;
+    }
+    .btn-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #EEF2FF;
+      color: #4F46E5;
+      padding: 8px 16px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+    .btn-back:hover {
+      background: #E0E7FF;
+    }
+  </style>
+</head>
+<body>
+  <div class="policy-container">
+    <a href="index.html" class="btn-back">← 메인 화면으로 돌아가기</a>
+    
+    <div class="policy-header">
+      <h1>생활기록부 피드백 시스템 개인정보처리방침</h1>
+      <p class="policy-date">시행일자: 2026년 3월 1일 | 최종 수정일: 2026년 8월 11일</p>
+    </div>
+
+    <div class="policy-section">
+      <p>생활기록부 피드백 시스템(이하 "서비스")은 「개인정보 보호법」 제30조 및 교육 관련 법령에 따라 학생 및 교직원의 개인정보를 안전하게 보호하고 관련 권익을 보장하기 위하여 다음과 같이 개인정보처리방침을 수립·공개합니다.</p>
+    </div>
+
+    <div class="policy-section">
+      <h2>제1조 (총칙 및 데이터 처리 구조)</h2>
+      <p>본 서비스는 교사의 학생부 작성 및 지도 직무를 보조하는 교육 도구로서 다음과 같은 독립형 데이터 처리 구조로 운영됩니다.</p>
+      <ul>
+        <li><strong>웹 호스팅(GitHub Pages)</strong>: 본 웹 애플리케이션은 정적 클라이언트(HTML/JS)로 배포되며, 중앙 호스팅 서버에 어떠한 개인정보도 수집·저장하지 않습니다.</li>
+        <li><strong>교사 개인 스프레드시트 1:1 통신</strong>: 학생이 작성 및 제출한 모든 데이터는 해당 학급 담당 교사가 발급한 <strong>구글 Apps Script 및 구글 스프레드시트 클라우드로만 1:1 직접 암호화(HTTPS) 전송</strong>됩니다.</li>
+        <li><strong>외부 제3자 AI 및 영리 목적 배제</strong>: 본 서비스는 외부 상용 AI API나 광고/영리 목적의 제3자 서비스로 데이터를 일절 전송하지 않습니다.</li>
+      </ul>
+    </div>
+
+    <div class="policy-section">
+      <h2>제2조 (처리하는 개인정보 항목)</h2>
+      <p>본 서비스는 교육활동 및 피드백 전달에 필요한 최소한의 정보만을 처리하며, 주민등록번호 등 고유식별정보는 일절 수집하지 않습니다.</p>
+      <table class="policy-table">
+        <thead>
+          <tr>
+            <th>구분</th>
+            <th>수집 및 처리 항목</th>
+            <th>수집 목적</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>학생 식별 정보</td>
+            <td>학번, 이름</td>
+            <td>학급 내 학생 본인 인증 및 피드백 1:1 매칭</td>
+          </tr>
+          <tr>
+            <td>교육 활동 정보</td>
+            <td>진로희망분야, 자율·진로·국어·개인별 세특 피드백 및 학생 수정 작성내용</td>
+            <td>학교생활기록부 기재 전 사전 점검 및 피드백 수정 제출</td>
+          </tr>
+          <tr>
+            <td>시스템 이용 정보</td>
+            <td>로그인 비밀번호(암호화 검증용), 최종 수정 일시</td>
+            <td>접근 제어 및 데이터 변경 이력 관리</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="policy-section">
+      <h2>제3조 (개인정보의 처리 목적)</h2>
+      <p>수집된 개인정보는 다음의 목적을 위해서만 이용됩니다.</p>
+      <ul>
+        <li>초·중등교육법 제25조에 따른 학교생활기록부 학교 교육활동 내용 사전 점검 및 학생 의견 수렴</li>
+        <li>담당 교사의 학생별 1:1 세부능력 및 특기사항 피드백 제공 및 학생 수정본 수합</li>
+        <li>학생 본인 확인 및 타인의 무단 열람/수정 방지를 위한 계정 접근 통제</li>
+      </ul>
+    </div>
+
+    <div class="policy-section">
+      <h2>제4조 (개인정보의 처리 및 보유 기간)</h2>
+      <ul>
+        <li><strong>보유 기간</strong>: 당해 학년도 학교생활기록부 작성 및 교육행정정보시스템(NEIS) 기재 완료 시까지 보유합니다.</li>
+        <li><strong>파기 절차 및 방법</strong>: 당해 학년도 학사 일정이 종료되거나 목적이 달성된 경우, 담당 교사의 스프레드시트 및 브라우저 로컬 저장소에서 지체 없이 영구 삭제·파기합니다.</li>
+      </ul>
+    </div>
+
+    <div class="policy-section">
+      <h2>제5조 (개인정보의 제3자 제공)</h2>
+      <p>서비스는 정보주체의 개인정보를 제1조 및 제3조에서 명시한 목적 범위 내에서만 처리하며, <strong>정보주체의 사전 동의 없이 개인정보를 제3자에게 제공하지 않습니다.</strong></p>
+    </div>
+
+    <div class="policy-section">
+      <h2>제6조 (개인정보 처리의 위탁 및 국외 이전)</h2>
+      <p>서비스는 인프라 운영 및 데이터 전송을 위해 다음과 같이 서비스 제공을 위탁하고 있습니다.</p>
+      <table class="policy-table">
+        <thead>
+          <tr>
+            <th>수탁업체</th>
+            <th>위탁 업무 내용</th>
+            <th>국외 이전 및 서버 위치</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>GitHub Inc. (GitHub Pages)</td>
+            <td>정적 웹페이지 호스팅 및 CDN 서빙</td>
+            <td>미국 (개인정보 미저장, 정적 웹 리소스만 서빙)</td>
+          </tr>
+          <tr>
+            <td>Google LLC (Google Drive / Apps Script)</td>
+            <td>교사 전용 스프레드시트 데이터 암호화 전송 및 저장</td>
+            <td>미국 및 글로벌 클라우드 (HTTPS 전송 암호화 적용)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="policy-section">
+      <h2>제7조 (정보주체의 권리·의무 및 행사 방법)</h2>
+      <ul>
+        <li>학생 및 법정대리인은 언제든지 담당 교사에게 본인의 개인정보에 대한 열람, 정정, 삭제 및 처리정지를 요구할 수 있습니다.</li>
+        <li>권리 행사는 담당 교사에게 구두, 서면 또는 이메일로 요청하실 수 있으며, 담당 교사는 관련 법령에 따라 지체 없이(10일 이내) 필요한 조치를 취합니다.</li>
+      </ul>
+    </div>
+
+    <div class="policy-section">
+      <h2>제8조 (학생 개인정보 보호 및 법적 지위)</h2>
+      <ul>
+        <li>본 서비스는 고등학교 교육활동 직무 지원 도구로서 담당 교사의 지도하에 학생 본인 확인 및 피드백 수정 목적으로만 활용됩니다.</li>
+        <li>각 학교가 개인정보처리자이며, 교사는 정당한 교육 직무 수행의 일환으로 본 시스템을 활용합니다.</li>
+      </ul>
+    </div>
+
+    <div class="policy-section">
+      <h2>제9조 (개인정보의 안전성 확보 조치)</h2>
+      <p>서비스는 개인정보의 도난, 유출, 변조를 방지하기 위해 다음과 같은 기술적·관리적 안전조치를 시행합니다.</p>
+      <ul>
+        <li><strong>전송 구간 암호화</strong>: 모든 데이터 전송은 TLS 1.3 기반의 HTTPS 보안 통신 프로토콜을 의무 적용합니다.</li>
+        <li><strong>접근 제어</strong>: 학생 개별 학번 및 비밀번호 인증을 통해서만 본인 데이터에 접근할 수 있으며, 교사 관리자 모드는 별도의 마스터 비밀번호로 보호됩니다.</li>
+        <li><strong>데이터 격리</strong>: 학급별 구글 시트 URL이 완전히 분리되어 타 학급 및 타인의 데이터에 상호 접근할 수 없습니다.</li>
+      </ul>
+    </div>
+
+    <div class="policy-section">
+      <h2>제10조 (개인정보 보호책임자 및 권익침해 구제)</h2>
+      <p>개인정보 처리에 관한 문의, 불만 처리 및 권리 구제를 위해 아래와 같이 책임자를 지정하고 있습니다.</p>
+      <ul>
+        <li><strong>개인정보 보호책임자</strong>: 학급 담당 교사 (문의처: 서비스 관리자 및 학교 교무실)</li>
+        <li><strong>이메일 문의</strong>: support@school-feedback.local</li>
+      </ul>
+      <p style="margin-top:10px;font-size:13px;color:#64748B;">
+        ※ 개인정보 침해에 대한 피해구제 및 상담이 필요한 경우 개인정보분쟁조정위원회(1833-6972), 개인정보침해신고센터(118) 등에 문의하실 수 있습니다.
+      </p>
+    </div>
+
+    <div class="policy-section">
+      <h2>제11조 (개인정보처리방침의 변경)</h2>
+      <p>이 개인정보처리방침은 2026년 3월 1일부터 적용되며, 법령 및 방침에 따른 변경 내용의 추가, 삭제 및 정정이 있는 경우에는 웹사이트 공지사항을 통하여 고지할 것입니다.</p>
+    </div>
+  </div>
+</body>
+</html>
