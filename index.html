@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>생활기록부 피드백 & 학생 수정 제출 시스템</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="main-header">
+      <div class="header-content">
+        <div class="logo-area">
+          <span class="logo-icon">🎓</span>
+          <div>
+            <h1 id="header-class-title">생활기록부 피드백 시스템</h1>
+          </div>
+          <span id="header-class-badge" class="class-tag">전체 공용 포털</span>
+        </div>
+
+        <div class="header-actions">
+          <button id="btn-open-config-modal" class="btn-header-config">
+            ⚙️ 학급/과목 시트 설정
+          </button>
+          <div id="user-profile" class="user-profile hidden">
+            <span id="user-role-tag" class="role-tag">학생</span>
+            <span id="user-display-name" class="user-info-text">홍길동</span>
+            <button id="btn-logout" class="btn btn-sm btn-outline">로그아웃</button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <!-- 1. LOGIN SECTION -->
+      <section id="login-section" class="section-card login-box">
+        <div class="login-header">
+          <h2 id="login-class-title">학급 포털 로그인</h2>
+          <p id="login-class-desc">학번과 비밀번호를 입력하여 접속하세요.</p>
+        </div>
+
+        <div id="no-sheet-banner" class="banner-notice warning hidden">
+          ⚠️ 아직 연결된 구글 시트가 없습니다. 우측 상단 <strong>[⚙️ 학급/과목 시트 설정]</strong>을 눌러 선생님의 시트 URL을 먼저 등록해 주세요!
+        </div>
+
+        <div id="active-sheet-banner" class="banner-notice hidden">
+          🟢 <strong id="active-sheet-name">우리 반 구글 시트</strong>와 실시간 양방향 연동 중입니다.
+        </div>
+
+        <!-- Login Tabs -->
+        <div class="login-tabs">
+          <button class="tab-btn active" data-tab="student">학생 로그인</button>
+          <button class="tab-btn" data-tab="teacher">선생님(관리자)</button>
+        </div>
+
+        <!-- Student Login Form -->
+        <form id="student-login-form" class="tab-content active">
+          <div class="form-group">
+            <label for="student-id">학번</label>
+            <input type="text" id="student-id" placeholder="예: 30101 (학번 입력)" required autocomplete="username">
+            <div id="student-name-preview" class="name-preview hidden">
+              👤 학생 이름: <strong id="preview-name-text"></strong>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="student-pw">비밀번호</label>
+            <input type="password" id="student-pw" placeholder="비밀번호 입력 (초기값: 학번)" required autocomplete="current-password">
+            <small class="help-text">💡 최초 로그인 시 초기 비밀번호는 본인 학번입니다.</small>
+          </div>
+          <button type="submit" class="btn btn-primary btn-block">학생 로그인</button>
+        </form>
+
+        <!-- Teacher Login Form -->
+        <form id="teacher-login-form" class="tab-content">
+          <div class="form-group">
+            <label for="teacher-pw">선생님 관리자 비밀번호</label>
+            <input type="password" id="teacher-pw" placeholder="관리자 비밀번호 입력" required autocomplete="current-password">
+            <small class="help-text">💡 기본 비밀번호는 <code>teacher1234</code> 입니다. (설정에서 변경 가능)</small>
+          </div>
+          <button type="submit" class="btn btn-teacher btn-block">선생님 관리자 로그인</button>
+        </form>
+      </section>
+
+      <!-- 2. STUDENT WORKSPACE SECTION -->
+      <section id="student-section" class="section-card hidden">
+        <div class="workspace-header">
+          <div class="welcome-card">
+            <div>
+              <h2 id="student-welcome-title">학생 생활기록부 워크스페이스</h2>
+              <p>선생님의 피드백을 확인하고, 나이스 바이트 수에 맞춰 알맞게 수정한 뒤 최종 제출하세요.</p>
+            </div>
+            <div class="status-box">
+              <span id="submit-status-badge" class="badge badge-warning">미작성 (0/3 영역)</span>
+              <span id="auto-save-indicator" class="auto-save-text">🔄 실시간 구글 시트 연동완료</span>
+            </div>
+          </div>
+
+          <div class="action-bar">
+            <div class="byte-info-banner">
+              📌 <strong>나이스(NEIS) 기준 바이트 계산</strong>: 한글/특수문자 3 Bytes, 영문/숫자/공백 1 Byte, 줄바꿈 2 Bytes
+            </div>
+            <div class="action-buttons">
+              <button id="btn-temp-save" class="btn btn-outline">💾 임시 저장</button>
+              <button id="btn-final-submit" class="btn btn-success">🚀 최종 제출하기</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4대 영역 입력 카드 -->
+        <div class="records-grid">
+          <!-- 영역 1: 자율활동 -->
+          <div class="record-card" data-domain="autonomy">
+            <div class="card-header">
+              <div class="card-title">
+                <span class="domain-icon">🌱</span>
+                <h3>창의적 체험활동 — 자율활동</h3>
+              </div>
+              <div class="byte-badge-wrapper">
+                <span class="byte-counter" id="byte-autonomy">0 / 1500 Bytes (0자)</span>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="feedback-box">
+                <div class="feedback-header">
+                  <div class="fb-tag-group">
+                    <span class="feedback-tag">💬 선생님 피드백</span>
+                    <span class="feedback-date" id="date-autonomy">-</span>
+                  </div>
+                  <div class="fb-actions">
+                    <button type="button" class="btn-fb-action btn-copy-fb" data-domain="autonomy">📋 피드백 전체 복사</button>
+                    <button type="button" class="btn-fb-action btn-apply-fb" data-domain="autonomy">✨ 이대로 적용하여 작성</button>
+                  </div>
+                </div>
+                <div class="feedback-content" id="feedback-autonomy">
+                  등록된 피드백이 없습니다.
+                </div>
+              </div>
+
+              <div class="editor-box">
+                <div class="editor-header">
+                  <label for="input-autonomy">✏️ 학생 수정 작성란</label>
+                  <button class="btn-copy" data-target="input-autonomy">📋 작성한 내용 복사</button>
+                </div>
+                <textarea id="input-autonomy" class="record-textarea" placeholder="자율활동 수정본을 입력하세요..."></textarea>
+                <div class="progress-bar-bg">
+                  <div class="progress-bar-fill" id="progress-autonomy"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 영역 2: 진로활동 -->
+          <div class="record-card" data-domain="career">
+            <div class="card-header">
+              <div class="card-title">
+                <span class="domain-icon">🧭</span>
+                <h3>창의적 체험활동 — 진로활동</h3>
+              </div>
+              <div class="byte-badge-wrapper">
+                <span class="byte-counter" id="byte-career">0 / 1500 Bytes (0자)</span>
+              </div>
+            </div>
+            <div class="card-body">
+              <!-- 진로희망분야 입력 -->
+              <div class="career-hope-wrapper">
+                <div class="career-hope-header">
+                  <label for="input-career-hope">🎯 진로희망분야 (1500 Bytes 합산 계산)</label>
+                </div>
+                <input type="text" id="input-career-hope" class="career-hope-input" placeholder="예: 국어교육과, 진로 탐색 중, 상경 계열 등">
+              </div>
+
+              <div class="feedback-box">
+                <div class="feedback-header">
+                  <div class="fb-tag-group">
+                    <span class="feedback-tag">💬 선생님 피드백</span>
+                    <span class="feedback-date" id="date-career">-</span>
+                  </div>
+                  <div class="fb-actions">
+                    <button type="button" class="btn-fb-action btn-copy-fb" data-domain="career">📋 피드백 전체 복사</button>
+                    <button type="button" class="btn-fb-action btn-apply-fb" data-domain="career">✨ 이대로 적용하여 작성</button>
+                  </div>
+                </div>
+                <div class="feedback-content" id="feedback-career">
+                  등록된 피드백이 없습니다.
+                </div>
+              </div>
+
+              <div class="editor-box">
+                <div class="editor-header">
+                  <label for="input-career">✏️ 학생 수정 작성란</label>
+                  <button class="btn-copy" data-target="input-career">📋 작성한 내용 복사</button>
+                </div>
+                <textarea id="input-career" class="record-textarea" placeholder="진로활동 수정본을 입력하세요..."></textarea>
+                <div class="progress-bar-bg">
+                  <div class="progress-bar-fill" id="progress-career"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 영역 3: 교과 세부능력 및 특기사항 - 국어 -->
+          <div class="record-card" data-domain="korean">
+            <div class="card-header">
+              <div class="card-title">
+                <span class="domain-icon">📚</span>
+                <h3>교과 세부능력 및 특기사항 — 국어</h3>
+              </div>
+              <div class="byte-badge-wrapper">
+                <span class="byte-counter" id="byte-korean">0 / 1500 Bytes (0자)</span>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="feedback-box">
+                <div class="feedback-header">
+                  <div class="fb-tag-group">
+                    <span class="feedback-tag">💬 선생님 피드백</span>
+                    <span class="feedback-date" id="date-korean">-</span>
+                  </div>
+                  <div class="fb-actions">
+                    <button type="button" class="btn-fb-action btn-copy-fb" data-domain="korean">📋 피드백 전체 복사</button>
+                    <button type="button" class="btn-fb-action btn-apply-fb" data-domain="korean">✨ 이대로 적용하여 작성</button>
+                  </div>
+                </div>
+                <div class="feedback-content" id="feedback-korean">
+                  등록된 피드백이 없습니다.
+                </div>
+              </div>
+
+              <div class="editor-box">
+                <div class="editor-header">
+                  <label for="input-korean">✏️ 학생 수정 작성란</label>
+                  <button class="btn-copy" data-target="input-korean">📋 작성한 내용 복사</button>
+                </div>
+                <textarea id="input-korean" class="record-textarea" placeholder="국어 세특 수정본을 입력하세요..."></textarea>
+                <div class="progress-bar-bg">
+                  <div class="progress-bar-fill" id="progress-korean"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 영역 4: 개인별 세부능력 및 특기사항 -->
+          <div class="record-card" data-domain="individual">
+            <div class="card-header">
+              <div class="card-title">
+                <span class="domain-icon">🌟</span>
+                <h3>개인별 세부능력 및 특기사항 <span style="font-size:13px;color:#8B5CF6;background:#F5F3FF;border:1px solid #DDD6FE;padding:2px 8px;border-radius:9999px;font-weight:700;">선택 제출</span></h3>
+              </div>
+              <div class="byte-badge-wrapper">
+                <span class="byte-counter" id="byte-individual">0 / 1500 Bytes (0자)</span>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="feedback-box">
+                <div class="feedback-header">
+                  <div class="fb-tag-group">
+                    <span class="feedback-tag">💬 선생님 피드백</span>
+                    <span class="feedback-date" id="date-individual">-</span>
+                  </div>
+                  <div class="fb-actions">
+                    <button type="button" class="btn-fb-action btn-copy-fb" data-domain="individual">📋 피드백 전체 복사</button>
+                    <button type="button" class="btn-fb-action btn-apply-fb" data-domain="individual">✨ 이대로 적용하여 작성</button>
+                  </div>
+                </div>
+                <div class="feedback-content" id="feedback-individual">
+                  등록된 피드백이 없습니다.
+                </div>
+              </div>
+
+              <div class="editor-box">
+                <div class="editor-header">
+                  <label for="input-individual">✏️ 학생 수정 작성란 <span style="font-size:12px;color:#64748B;font-weight:normal;">(선택 사항입니다)</span></label>
+                  <button class="btn-copy" data-target="input-individual">📋 작성한 내용 복사</button>
+                </div>
+                <textarea id="input-individual" class="record-textarea" placeholder="개인 세특 수정본을 입력하세요 (선택 사항)..."></textarea>
+                <div class="progress-bar-bg">
+                  <div class="progress-bar-fill" id="progress-individual"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. TEACHER DASHBOARD SECTION -->
+      <section id="teacher-section" class="section-card hidden">
+        <div class="teacher-dashboard-header">
+          <div>
+            <h2 id="teacher-dashboard-title">👨‍🏫 교사 관리자 대시보드</h2>
+            <p>학생들의 제출 현황 파악 및 피드백을 실시간으로 관리합니다. (개인세특은 선택 제출)</p>
+          </div>
+
+          <div class="admin-actions">
+            <button id="btn-sync-sheet" class="btn btn-success" style="background:#059669;color:#fff;font-weight:600;">🔄 구글 시트 최신 제출물 동기화</button>
+            <button id="btn-open-batch-modal" class="btn btn-primary">📤 피드백 일괄 등록</button>
+            <button id="btn-export-all" class="btn btn-outline">📥 전체 CSV 내보내기</button>
+            <button id="btn-export-txt" class="btn btn-outline">📄 TXT 파일 통합 저장</button>
+          </div>
+        </div>
+
+        <!-- Stats Overview -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <span class="stat-icon">👥</span>
+            <div class="stat-info">
+              <span class="stat-value" id="stat-total-count">0명</span>
+              <span class="stat-label">전체 학생</span>
+            </div>
+          </div>
+          <div class="stat-card">
+            <span class="stat-icon">✅</span>
+            <div class="stat-info">
+              <span class="stat-value" id="stat-all-submitted-count">0명</span>
+              <span class="stat-label">전체 완료 (필수 3/3)</span>
+            </div>
+          </div>
+          <div class="stat-card">
+            <span class="stat-icon">✍️</span>
+            <div class="stat-info">
+              <span class="stat-value" id="stat-partial-count">0명</span>
+              <span class="stat-label">부분 제출 (1~2/3)</span>
+            </div>
+          </div>
+          <div class="stat-card">
+            <span class="stat-icon">⏳</span>
+            <div class="stat-info">
+              <span class="stat-value" id="stat-unwritten-count">0명</span>
+              <span class="stat-label">미작성 (0/3)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Student List Filter & Grid -->
+        <div class="student-list-container">
+          <div class="list-filter-bar">
+            <h3>📋 학생 목록</h3>
+            <div class="filter-controls">
+              <input type="text" id="student-search-input" placeholder="학번 또는 이름 검색...">
+              <select id="student-status-filter">
+                <option value="all">전체 보기</option>
+                <option value="all_submitted">전체 완료 (필수 3/3)</option>
+                <option value="partial">부분 제출 (1~2/3)</option>
+                <option value="unwritten">미작성 (0/3)</option>
+              </select>
+            </div>
+          </div>
+
+          <div id="student-grid" class="student-grid">
+            <!-- JS로 학생 카드가 동적 생성됩니다 -->
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Modals -->
+
+    <!-- Modal 0: 학급 구글 시트 연동 설정 모달 -->
+    <div id="config-modal" class="modal-overlay hidden">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3>⚙️ 학급/과목 구글 시트 연동 설정</h3>
+          <button class="modal-close-btn">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="cfg-class-name">🏷️ 학급/과목 명칭</label>
+            <input type="text" id="cfg-class-name" placeholder="예: 3학년 2반 또는 2학년 영어">
+          </div>
+          <div class="form-group">
+            <label for="cfg-sheet-url">🔗 구글 Apps Script 웹앱 URL</label>
+            <input type="text" id="cfg-sheet-url" placeholder="https://script.google.com/macros/s/.../exec">
+            <small class="help-text">💡 선생님 구글 시트의 [배포] ➔ [새 배포] ➔ [웹 앱] 배포 URL을 입력하세요.</small>
+          </div>
+          <div class="form-group">
+            <label for="cfg-teacher-pw">🔑 선생님 관리자 비밀번호</label>
+            <input type="password" id="cfg-teacher-pw" placeholder="기본값: teacher1234">
+          </div>
+
+          <div class="link-share-card">
+            <label><strong>📢 우리 반 학생 접속 전용 링크</strong></label>
+            <p style="font-size:12px;color:var(--text-muted);margin-top:2px;">학생들에게 아래 링크를 복사해서 공유하면 자동으로 이 학급으로 연결됩니다!</p>
+            <div class="link-input-group">
+              <input type="text" id="cfg-share-link" readonly value="설정 저장 후 생성됩니다.">
+              <button id="btn-copy-share-link" class="btn btn-sm btn-primary">🔗 링크 복사</button>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button id="btn-save-config" class="btn btn-primary">💾 설정 저장 및 연동하기</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal 1: 비밀번호 변경 모달 -->
+    <div id="pw-change-modal" class="modal-overlay hidden">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3>🔒 비밀번호 변경</h3>
+          <button class="modal-close-btn">&times;</button>
+        </div>
+        <div class="modal-body">
+          <p style="font-size:14px;color:var(--text-muted);margin-bottom:16px;">
+            보안을 위해 초기 비밀번호를 안전한 새 비밀번호로 변경해 주세요.
+          </p>
+          <div class="form-group">
+            <label for="new-pw">새 비밀번호</label>
+            <input type="password" id="new-pw" placeholder="새 비밀번호 입력 (4자 이상)" required>
+          </div>
+          <div class="form-group">
+            <label for="new-pw-confirm">새 비밀번호 확인</label>
+            <input type="password" id="new-pw-confirm" placeholder="새 비밀번호 재입력" required>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button id="btn-change-pw-cancel" class="btn btn-secondary modal-close-action">다음에 변경</button>
+          <button id="btn-save-pw" class="btn btn-primary">비밀번호 변경하기</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal 2: 교사 개별 학생 피드백 수정 모달 -->
+    <div id="teacher-edit-modal" class="modal-overlay hidden">
+      <div class="modal-card modal-card-lg">
+        <div class="modal-header">
+          <div>
+            <h3 id="teacher-modal-student-info">학생 피드백 관리</h3>
+            <span id="teacher-modal-status-badge" class="badge badge-warning">미작성</span>
+          </div>
+          <button class="modal-close-btn">&times;</button>
+        </div>
+        <div class="modal-body">
+          <!-- 진로희망 확인란 -->
+          <div class="t-section-block">
+            <label>🎯 학생 입력 진로희망분야</label>
+            <input type="text" id="t-career-hope-view" readonly style="background:#F8FAFC;font-weight:600;width:100%;padding:8px 12px;border:1px solid var(--border-color);border-radius:var(--radius-sm);">
+          </div>
+
+          <!-- 영역별 탭 -->
+          <div class="teacher-edit-tabs">
+            <button class="t-tab-btn active" data-ttab="ttab-autonomy">🌱 자율활동</button>
+            <button class="t-tab-btn" data-ttab="ttab-career">🧭 진로활동</button>
+            <button class="t-tab-btn" data-ttab="ttab-korean">📚 국어 세특</button>
+            <button class="t-tab-btn" data-ttab="ttab-individual">🌟 개인 세특 (선택)</button>
+          </div>
+
+          <!-- 탭 콘텐츠들 -->
+          <div id="ttab-autonomy" class="teacher-tab-content active">
+            <div class="t-section-block">
+              <label for="t-feedback-autonomy">💬 자율활동 선생님 피드백 입력</label>
+              <textarea id="t-feedback-autonomy" class="record-textarea" placeholder="학생에게 제공할 자율활동 피드백을 입력하세요..."></textarea>
+            </div>
+            <div class="t-section-block">
+              <label>📄 학생이 제출한 자율활동 수정본</label>
+              <div id="t-submission-autonomy" class="t-submission-display">(학생 제출물이 없습니다.)</div>
+            </div>
+          </div>
+
+          <div id="ttab-career" class="teacher-tab-content">
+            <div class="t-section-block">
+              <label for="t-feedback-career">💬 진로활동 선생님 피드백 입력</label>
+              <textarea id="t-feedback-career" class="record-textarea" placeholder="학생에게 제공할 진로활동 피드백을 입력하세요..."></textarea>
+            </div>
+            <div class="t-section-block">
+              <label>📄 학생이 제출한 진로활동 수정본</label>
+              <div id="t-submission-career" class="t-submission-display">(학생 제출물이 없습니다.)</div>
+            </div>
+          </div>
+
+          <div id="ttab-korean" class="teacher-tab-content">
+            <div class="t-section-block">
+              <label for="t-feedback-korean">💬 국어 세특 선생님 피드백 입력</label>
+              <textarea id="t-feedback-korean" class="record-textarea" placeholder="학생에게 제공할 국어 세특 피드백을 입력하세요..."></textarea>
+            </div>
+            <div class="t-section-block">
+              <label>📄 학생이 제출한 국어 세특 수정본</label>
+              <div id="t-submission-korean" class="t-submission-display">(학생 제출물이 없습니다.)</div>
+            </div>
+          </div>
+
+          <div id="ttab-individual" class="teacher-tab-content">
+            <div class="t-section-block">
+              <label for="t-feedback-individual">💬 개인 세특 선생님 피드백 입력 (선택)</label>
+              <textarea id="t-feedback-individual" class="record-textarea" placeholder="학생에게 제공할 개인 세특 피드백을 입력하세요..."></textarea>
+            </div>
+            <div class="t-section-block">
+              <label>📄 학생이 제출한 개인 세특 수정본</label>
+              <div id="t-submission-individual" class="t-submission-display">(학생 제출물이 없습니다.)</div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button id="btn-reset-student-pw" class="btn btn-outline" style="margin-right:auto;color:var(--danger-color);border-color:var(--danger-color);">비밀번호 학번으로 리셋</button>
+          <button class="btn btn-secondary modal-close-action">닫기</button>
+          <button id="btn-save-teacher-feedback" class="btn btn-primary">피드백 저장하기</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal 3: 피드백 일괄 등록 모달 -->
+    <div id="batch-modal" class="modal-overlay hidden">
+      <div class="modal-card modal-card-lg">
+        <div class="modal-header">
+          <h3>📤 피드백 일괄 등록</h3>
+          <button class="modal-close-btn">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="batch-domain-select">등록할 영역 선택</label>
+            <select id="batch-domain-select" style="width:100%;padding:10px 14px;border:1px solid var(--border-color);border-radius:var(--radius-sm);font-size:14px;font-weight:700;">
+              <option value="autonomy">창의적 체험활동 — 자율활동</option>
+              <option value="career">창의적 체험활동 — 진로활동</option>
+              <option value="korean">교과 세부능력 및 특기사항 — 국어</option>
+              <option value="individual">개인별 세부능력 및 특기사항 (선택)</option>
+            </select>
+          </div>
+
+          <div class="batch-tabs">
+            <button class="batch-tab-btn active" data-btab="btab-text">텍스트 복사-붙여넣기 방식</button>
+            <button class="batch-tab-btn" data-btab="btab-csv">CSV 파일 업로드 방식</button>
+          </div>
+
+          <div id="btab-text" class="batch-tab-content active">
+            <p style="font-size:13px;color:var(--text-muted);margin-bottom:8px;">
+              엑셀이나 한글에서 학번과 피드백 내용을 복사해서 붙여넣으세요.
+            </p>
+            <textarea id="batch-text-input" class="batch-textarea" placeholder="30101 피드백 내용...&#10;30102 피드백 내용..."></textarea>
+          </div>
+
+          <div id="btab-csv" class="batch-tab-content">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+              <p style="font-size:13px;color:var(--text-muted);">
+                작성하신 CSV 파일을 업로드하세요.
+              </p>
+              <button id="btn-download-csv-template" class="btn btn-sm btn-outline">📥 입력용 CSV 양식 다운로드</button>
+            </div>
+            <input type="file" id="batch-file-input" accept=".csv" style="margin-bottom:12px;">
+          </div>
+
+          <div class="batch-preview-container" style="margin-top:16px;">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <h4 style="font-size:14px;font-weight:700;">실시간 파싱 미리보기 (<span id="batch-parsed-count">0</span>명 인식됨)</h4>
+            </div>
+            <div class="batch-preview-table-container">
+              <table class="batch-table">
+                <thead>
+                  <tr>
+                    <th style="width:70px;">학번</th>
+                    <th style="width:80px;">이름</th>
+                    <th>인식된 피드백 내용</th>
+                  </tr>
+                </thead>
+                <tbody id="batch-preview-tbody">
+                  <!-- 파싱 결과 표시 -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary modal-close-action">취소</button>
+          <button id="btn-apply-batch" class="btn btn-primary">선택한 영역에 일괄 적용하기</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast Notifications Container -->
+    <div id="toast-container" class="toast-container"></div>
+  </div>
+
+  <script src="app.js?v=1.0"></script>
+</body>
+</html>
