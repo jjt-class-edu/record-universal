@@ -38,16 +38,28 @@
       <!-- 1. LOGIN SECTION -->
       <section id="login-section" class="section-card login-box">
         <div class="login-header">
+          <div class="login-badge-pill" id="login-status-pill">
+            <span class="pill-dot"></span>
+            <span id="login-status-text">학급 포털</span>
+          </div>
           <h2 id="login-class-title">학급 포털 로그인</h2>
           <p id="login-class-desc">학번과 비밀번호를 입력하여 접속하세요.</p>
         </div>
 
         <div id="no-sheet-banner" class="banner-notice warning hidden">
-          ⚠️ 아직 연결된 구글 시트가 없습니다. 우측 상단 <strong>[⚙️ 학급/과목 시트 설정]</strong>을 눌러 선생님의 시트 URL을 먼저 등록해 주세요!
+          <div class="banner-icon">⚠️</div>
+          <div class="banner-body">
+            <strong class="banner-title">연결된 구글 시트가 없습니다</strong>
+            <p class="banner-desc">상단 <strong>[⚙️ 학급/과목 시트 설정]</strong>을 눌러 선생님의 구글 시트 URL을 등록해 주세요.</p>
+          </div>
         </div>
 
-        <div id="active-sheet-banner" class="banner-notice hidden">
-          🟢 <strong id="active-sheet-name">우리 반 구글 시트</strong>와 실시간 양방향 연동 중입니다.
+        <div id="active-sheet-banner" class="banner-notice success hidden">
+          <div class="banner-icon">🟢</div>
+          <div class="banner-body">
+            <strong class="banner-title"><span id="active-sheet-name">우리 반</span> 구글 시트 연동 중</strong>
+            <p class="banner-desc">실시간 양방향 데이터 동기화가 활성화되어 있습니다.</p>
+          </div>
         </div>
 
         <!-- Login Tabs -->

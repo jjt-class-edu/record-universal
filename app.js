@@ -103,12 +103,15 @@ document.addEventListener('DOMContentLoaded', () => {
       elActiveSheetName.textContent = config.className;
     }
 
+    const elLoginStatusText = document.getElementById('login-status-text');
     if (config.sheetUrl) {
       elNoSheetBanner.classList.add('hidden');
       elActiveSheetBanner.classList.remove('hidden');
+      if (elLoginStatusText) elLoginStatusText.textContent = `${config.className || '학급'} 연동 완료`;
     } else {
       elNoSheetBanner.classList.remove('hidden');
       elActiveSheetBanner.classList.add('hidden');
+      if (elLoginStatusText) elLoginStatusText.textContent = '시트 연동 필요';
     }
 
     // Modal Inputs
@@ -350,7 +353,10 @@ document.addEventListener('DOMContentLoaded', () => {
       document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
       document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
       btn.classList.add('active');
-      document.getElementById(btn.dataset.tab + '-form').classList.add('active');
+      const targetForm = document.getElementById(btn.dataset.tab + '-login-form');
+      if (targetForm) {
+        targetForm.classList.add('active');
+      }
     });
   });
 
